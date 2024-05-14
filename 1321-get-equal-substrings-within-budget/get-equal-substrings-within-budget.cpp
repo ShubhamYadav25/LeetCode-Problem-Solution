@@ -8,12 +8,20 @@ public:
         
         while(j < s.length()){
             
+            // add ascii difference
             sum += abs (s[j]-t[j]);
+            
+            // invalid window when sum > maxCost
+            // then decrease it to valid window
             while(sum > maxCost){
                 sum -= abs (s[i]-t[i]);
                 i++;
             }
+            
+            // update the counter to process further chars in string s
             j++;
+            
+            // update the result
             res = max(res, j-i);
 
         }
