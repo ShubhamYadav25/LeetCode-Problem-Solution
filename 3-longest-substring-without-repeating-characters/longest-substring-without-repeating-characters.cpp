@@ -11,7 +11,7 @@ public:
             // if char s[j] not present in map increase counter
             if(map[s[j]]++ == 0) counter ++;
             
-            while(map[s[j]]>1) map[s[i++]]--;
+            while(map[s[j]]>1) if(map[s[i++]]-->1) counter--;
             j++;
             d = max(d, j-i);
         }
