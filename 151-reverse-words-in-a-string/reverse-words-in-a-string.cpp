@@ -1,27 +1,19 @@
 class Solution {
 public:
-    string reverseWords(string str) {
-     
-        string output = "";
-        stack<string> reveredString;
-
-        istringstream stringStream(str);
+    string reverseWords(string data) {
+        stringstream s(data);
+        string str;
         
-        string tokenizeString;
-        
-        while(stringStream >> tokenizeString){
-            if(tokenizeString != ""){
-                reveredString.push(tokenizeString);            
-            }
+        stack<string>st;
+        while(s>>str){
+            st.push(str);
         }
-    
-        while(!reveredString.empty()){
-            output += reveredString.top();
-            reveredString.pop();
-            if(!reveredString.empty()){
-                output+=" ";
-            }
+        string ans = "";
+        while(!st.empty()){
+            ans += st.top() + " ";
+            st.pop();
         }
-        return output;
+        ans.pop_back();
+        return ans;
     }
 };
