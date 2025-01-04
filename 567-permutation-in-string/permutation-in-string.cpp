@@ -1,39 +1,34 @@
 class Solution {
 public:
     bool checkInclusion(string s1, string s2) {
-        unordered_map<char, int> table;
-        
-        for(char c : s1){
-            table[c]++;
+
+        int n1 = s1.length();
+        int n2 = s2.length();
+
+        // create window for s1 and s2
+        vector<int> v1(26, 0);
+        vector<int> v2(26, 0);
+
+        for (auto x : s1) {
+            v1[x - 'a'] += 1;
         }
         
-        int begin = 0, end = 0, counter = table.size();
-        
-        while(end < s2.length()){
-            char endchar = s2[end];
-            
-            if(table.count(endchar) == 1){
-                table[endchar]--;
-                if(table[endchar] == 0) counter--;
+        int i = 0, j = 0;
+        while (j < n2) {
+            v2[s2[j] - 'a'] += 1;
+
+            if (j - i + 1 == n1) {
+                if (v1 == v2)
+                    return true;
+
+                v2[s2[i] - 'a'] -= 1;
+
+                i++;
             }
-            
-            end++;
-            
-            while(counter == 0){
-                if(end - begin == s1.length()) return true;
-                
-                char startchar = s2[begin];
-                
-                if(table.count(startchar) == 1){
-                    table[startchar]++;
-                    if(table[startchar] > 0) counter++;
-                }
-                
-                begin++;
-            }
+
+            j++;
         }
-        
+
         return false;
-        
     }
 };
