@@ -11,10 +11,36 @@
  */
 class Solution {
 public:
-    int countNodes(TreeNode* root) {
-        if(!root) return 0;
-        if((root-> left == NULL) && (root->right == NULL)) return 1;
+    int getLeftHeight(TreeNode* node) {
+        int height = 0;
+        while (node) {
+            height++;
+            node = node->left;
+        }
+        return height;
+    }
 
-        return 1 + (countNodes(root->left) + countNodes(root->right));
+    int getRightHeight(TreeNode* node) {
+        int height = 0;
+        while (node) {
+            height++;
+            node = node->right;
+        }
+        return height;
+    }
+
+    int countNodes(TreeNode* root) {
+       if (!root) return 0;
+
+        int leftHeight = getLeftHeight(root);
+        int rightHeight = getRightHeight(root);
+
+        // height of the leftmost path equals the height of the rightmost path, the tree is perfect, and the number of nodes is 2^h -1
+
+        if (leftHeight == rightHeight) {
+            return (1 << leftHeight) - 1;
+        }
+
+        return 1 + countNodes(root->left) + countNodes(root->right);
     }
 };
