@@ -12,27 +12,23 @@
 class Solution {
 public:
     int ans = 0;
-    string pathSum = "";
-    void SumPath(TreeNode* root){
+
+    void SumPath(TreeNode* root, int pathSum) {
         if (!root) return;
 
-        pathSum += std::to_string(root->val);
+        pathSum = pathSum * 10 + root->val;
 
-        // If it's a leaf node, add the number to the answer
         if (!root->left && !root->right) {
-            ans += stoi(pathSum);
-        } else {
-            SumPath(root->left);
-            SumPath(root->right);
+            ans += pathSum;
+            return;
         }
 
-        // Backtrack: Remove the last digit for correct path
-        pathSum.pop_back();
-
+        SumPath(root->left, pathSum);
+        SumPath(root->right, pathSum);
     }
 
     int sumNumbers(TreeNode* root) {
-        SumPath(root);
-        return ans;
+          SumPath(root, 0);
+         return ans;
     }
 };
