@@ -1,25 +1,24 @@
 class Solution {
 public:
-void backtrack(int start, vector<int>& nums, vector<int>& path, vector<vector<int>>& result) {
-        result.push_back(path);
-
-        for (int i = start; i < nums.size(); ++i) {
-           
-            // Include
-            path.push_back(nums[i]);
-
-            // Recurse with next index
-            backtrack(i + 1, nums, path, result);
-
-            // Backtrack (undo the choice)
-            path.pop_back();
+void backtrack(const vector<int>& nums, int start, vector<int>& current, vector<vector<int>>& result) {
+        if (start == nums.size()) {
+            result.push_back(current);
+            return;
         }
+        
+        //exclude nums[start]
+        backtrack(nums, start + 1, current, result);
+        
+        // include nums[start]
+        current.push_back(nums[start]);
+        backtrack(nums, start + 1, current, result);
+        current.pop_back(); // backtrack (undo the inclusion)
     }
 
     vector<vector<int>> subsets(vector<int>& nums) {
-         vector<vector<int>> result;
-        vector<int> path;
-        backtrack(0, nums, path, result);
+        vector<vector<int>> result;
+        vector<int> current;
+        backtrack(nums, 0, current, result);
         return result;
     }
 };
