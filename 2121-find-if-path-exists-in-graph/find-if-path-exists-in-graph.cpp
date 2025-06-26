@@ -1,17 +1,5 @@
 class Solution {
 public:
-    bool dfs(vector<vector<int>>& adj, int s, int d, vector<bool>& v){
-        if(s == d) return true;
-        v[s] = true;
-        for(auto i : adj[s]){
-            
-            if(!v[i]){
-                if(dfs(adj, i, d, v)) return true; 
-            }
-        }
-
-        return false;
-    }
 
     bool validPath(int n, vector<vector<int>>& edges, int source, int destination) {
         vector<vector<int>> adj(n);
