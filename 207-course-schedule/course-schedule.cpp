@@ -1,33 +1,36 @@
 class Solution {
 public:
+    bool dfs(int node, vector<vector<int>>& graph, vector<bool>& visited, vector<bool>& onPath) {
+        if (onPath[node]) return true;  // cycle
+        if (visited[node]) return false;
+
+        visited[node] = true;
+        onPath[node] = true;
+
+        for (int neighbor : graph[node]) {
+            if (dfs(neighbor, graph, visited, onPath))
+                return true; 
+        }
+
+        onPath[node] = false; // backtrack
+        return false;
+    }
+
     bool canFinish(int numCourses, vector<vector<int>>& prerequisites) {
         vector<vector<int>> graph(numCourses);
-        vector<int> indegree(numCourses, 0);
-        
         for (auto& p : prerequisites) {
-            int to = p[0], from = p[1];
-            graph[from].push_back(to);
-            indegree[to]++;
+            graph[p[1]].push_back(p[0]); 
         }
 
-        queue<int> q;
+        vector<bool> visited(numCourses, false);
+        vector<bool> onPath(numCourses, false);
+
         for (int i = 0; i < numCourses; ++i) {
-            if (indegree[i] == 0)
-                q.push(i);
-        }
-
-        int count = 0;
-        while (!q.empty()) {
-            int course = q.front(); q.pop();
-            count++;
-
-            for (int neighbor : graph[course]) {
-                indegree[neighbor]--;
-                if (indegree[neighbor] == 0)
-                    q.push(neighbor);
+            if (!visited[i]) {
+                if (dfs(i, graph, visited, onPath))
+                    return false; 
             }
         }
-
-        return count == numCourses;
+        return true;
     }
 };
