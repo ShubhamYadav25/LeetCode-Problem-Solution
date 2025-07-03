@@ -1,44 +1,48 @@
 class Solution {
-public:
+public: 
+    bool dfs(int node, vector<bool>& visited, vector<bool>& onPath, stack<int>& st, vector<vector<int>>& adj) {
+        visited[node] = true;
+        onPath[node] = true;
+
+        for (int neighbor : adj[node]) {
+            if (!visited[neighbor]) {
+                if (!dfs(neighbor, visited, onPath, st, adj)) {
+                    return false; 
+                }
+            } else if (onPath[neighbor]) {
+                return false;  
+            }
+        }
+
+        onPath[node] = false;
+        st.push(node);
+        return true;
+    }
+
     vector<int> findOrder(int numCourses, vector<vector<int>>& prerequisites) {
-        
-        // adj list
         vector<vector<int>> graph(numCourses);
-        for(auto& v : prerequisites){
-                graph[v[1]].push_back(v[0]);
+        for (auto& v : prerequisites) {
+            graph[v[1]].push_back(v[0]);
         }
 
-        vector<int> indegree(numCourses, 0);
+        vector<bool> visited(numCourses, false);
+        vector<bool> onPath(numCourses, false);
+        stack<int> st;
 
-        for(auto v : prerequisites ){
-            indegree[v[0]]++;
-        }
-
-        // push indegree 0 to queue
-        queue<int> q;
-
-        for(int i = 0; i < numCourses; i++){
-            if(indegree[i] == 0){
-                q.push(i);
+        for (int i = 0; i < numCourses; i++) {
+            if (!visited[i]) {
+                if (!dfs(i, visited, onPath, st, graph)) {
+                    return {};  // Cycle detected, no valid ordering
+                }
             }
         }
 
-        vector<int> res;
-
-        // pop and reduce indegre
-        while(!q.empty()){
-            int x = q.front();
-            q.pop();
-            res.push_back(x);
-            // reduce indegree of neighbour
-            for(auto neighbour : graph[x]){
-                indegree[neighbour]--;
-
-                if(indegree[neighbour] == 0) q.push(neighbour);
-            }
+        vector<int> topo;
+        while (!st.empty()) {
+            topo.push_back(st.top());
+            st.pop();
         }
 
-        if(res.size() == numCourses) return res;
-        else return {};  // Cycle detected; no valid ordering
+        return topo;
     }
 };
