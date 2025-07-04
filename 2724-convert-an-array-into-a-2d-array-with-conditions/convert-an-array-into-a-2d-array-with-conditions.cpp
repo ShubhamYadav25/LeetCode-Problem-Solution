@@ -2,24 +2,22 @@ class Solution {
 public:
     vector<vector<int>> findMatrix(vector<int>& nums) {
         
-        unordered_map<int, int> count;
-        
-        // duplicate decide no of rows in matrix
-        int maxFreq = 0;
+         unordered_map<int, int> freq;
         for (int num : nums) {
-            count[num]++;
-            maxFreq = max(maxFreq, count[num]);
+            freq[num]++;
         }
 
-        vector<vector<int>> res(maxFreq);
+        int maxRows = 0;
+        for (const auto& [num, count] : freq) {
+            maxRows = max(maxRows, count);
+        }
 
-        // use to track used num
-        unordered_map<int, int> usage;
+        vector<vector<int>> res(maxRows);
 
-        for (int num : nums) {
-            int row = usage[num];     
-            res[row].push_back(num);   
-            usage[num]++;              
+        for (const auto& [num, count] : freq) {
+            for (int i = 0; i < count; i++) {
+                res[i].push_back(num);  
+            }
         }
 
         return res;
