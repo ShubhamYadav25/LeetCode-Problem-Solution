@@ -1,23 +1,19 @@
 class Solution {
 public:
-    vector<vector<int>> findMatrix(vector<int>& nums) {
-        
-         unordered_map<int, int> freq;
+    vector<vector<int>> findMatrix(vector<int>& nums) {  
+       int freq[201] = {}; 
+        vector<vector<int>> res;
+
         for (int num : nums) {
+            int row = freq[num];
+
+            // If current row doesn't exist yet, create it
+            if (res.size() <= row)
+                res.push_back({});
+
+            res[row].push_back(num);
+
             freq[num]++;
-        }
-
-        int maxRows = 0;
-        for (const auto& [num, count] : freq) {
-            maxRows = max(maxRows, count);
-        }
-
-        vector<vector<int>> res(maxRows);
-
-        for (const auto& [num, count] : freq) {
-            for (int i = 0; i < count; i++) {
-                res[i].push_back(num);  
-            }
         }
 
         return res;
