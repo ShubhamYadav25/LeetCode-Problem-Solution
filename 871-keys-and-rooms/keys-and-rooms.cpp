@@ -3,14 +3,11 @@ public:
 
     void dfs(vector<vector<int>>& rooms, int index, vector<bool>& visited){
         
+        visited[index] = true;
         for(auto v : rooms[index]){
-            
             if(!visited[v]){
-                 visited[v] = true;
-            dfs(rooms, v, visited);
+                dfs(rooms, v, visited);
             }
-           
-
         }
 
     }
@@ -21,7 +18,7 @@ public:
         vector<bool> visited(n, false);
 
         dfs(rooms, 0, visited);
-        visited[0] = true;
+       
         for(auto i : visited){
             if(!i) return false; 
         }
