@@ -13,11 +13,17 @@ public:
 
         minHeap.push({0, 0, 0}); // (effort, row, col)
 
+        vector<vector<bool>> visited(m, vector<bool>(n, false));
+
+
         int dirs[4][2] = {{-1,0}, {1,0}, {0,-1}, {0,1}};
 
         while (!minHeap.empty()) {
             auto [effort, x, y] = minHeap.top();
             minHeap.pop();
+
+             if (visited[x][y]) continue;
+            visited[x][y] = true;
 
             // If we reached the target
             if (x == m - 1 && y == n - 1) {
