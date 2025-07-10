@@ -1,38 +1,22 @@
 class Solution {
 public:
-    int findCheapestPrice(int n, vector<vector<int>>& flights, int src, int dst, int k) {
-         
-        // adj list
-        vector<pair<int, int>> adj[n];
-
-        for(const auto& flight : flights){
-            int from = flight[0], to = flight[1], price = flight[2];
-            adj[from].push_back({to, price});
-        }
+    int findCheapestPrice(int n, vector<vector<int>>& flights, int src, int dst,
+                          int k) {
 
         vector<int> costs(n, INT_MAX);
         costs[src] = 0;
 
-        // {city, currentCost, stopsTaken}
-        queue<tuple<int , int , int>> q;
-        q.push({src, 0, 0});
+        // RELAXATION ONLY at most k times
+        for (int i = 0; i <= k; i++) {
+            vector<int> temp = costs;
+            for (const auto& flight : flights) {
+                int u = flight[0], v = flight[1], w = flight[2];
 
-        while(!q.empty()){
-            
-            auto [city, currentCost, stopsTaken] = q.front();
-            q.pop();
-
-            if(stopsTaken > k) continue;
-
-            // update cost near to city
-            for (const auto& [nextCity, price] : adj[city]) {
-                int updatedCost = currentCost + price;
-                if(updatedCost < costs[nextCity]){
-                    costs[nextCity] = updatedCost;
-                    q.push({nextCity, updatedCost, stopsTaken + 1});
+                if (costs[u] != INT_MAX && costs[u] + w < temp[v]) {
+                    temp[v] = costs[u] + w;
                 }
             }
-            
+            costs = temp;
         }
 
         return (costs[dst] == INT_MAX) ? -1 : costs[dst];
