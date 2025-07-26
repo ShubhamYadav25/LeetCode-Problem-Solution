@@ -1,49 +1,26 @@
 class Solution {
 public:
     bool isValid(string s) {
-        
-        stack<int> st;
-        if(s.length() == 1) return false;
+        stack<char> st;
+        unordered_map<char, char> bracketPair = {
+            {')', '('},
+            {']', '['},
+            {'}', '{'}
+        };
 
-        for(int i = 0; i< s.length();i++){
-
-
-            if(s[i] == ')'){
-                
-                if(!st.empty()){
-                    char x = st.top();
-                    if(x != '(') return false;
-                    st.pop();
+        for (char ch : s) {
+            // If it's a closing bracket
+            if (bracketPair.count(ch)) {
+                if (st.empty() || st.top() != bracketPair[ch]) {
+                    return false;
                 }
-                else {
-                st.push(s[i]);
-            }
-                
-            }else if (s[i] == '}'){
-                if(!st.empty()){
-                    char x = st.top();
-                    if(x != '{') return false;
-                    st.pop();
-                }
-                else {
-                st.push(s[i]);
-            }
-            }else if(s[i] == ']'){
-                if(!st.empty()){
-                    char x = st.top();
-                    if(x != '[') return false;
-                    st.pop();
-                }
-                else {
-                st.push(s[i]);
-            }
-            }else {
-                st.push(s[i]);
+                st.pop();
+            } else {
+                // It's an opening bracket
+                st.push(ch);
             }
         }
 
-        if(!st.empty()) return false;
-
-        return true;
+        return st.empty();
     }
 };
