@@ -6,17 +6,38 @@
  *     TreeNode *right;
  *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
  *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
- *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
+ *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left),
+ * right(right) {}
  * };
  */
 class Solution {
 public:
     int maxDepth(TreeNode* root) {
-       
-       if(!root) return 0;
+        if (root == nullptr) return 0;
 
-       return 1 + max(maxDepth(root->left), maxDepth(root->right));
-       
+        stack<pair<TreeNode*, int>> st;
+
+        st.push({root, 1});
+
+        int max1 = -1;
+
+        while(!st.empty()){
+            auto [node, depth] = st.top();
+            st.pop();
+
+            max1 = max(max1, depth);
+        
+            if (node->left) {
+                st.push({node->left, depth + 1});
+            }
+
+            if (node->right) {
+                st.push({node->right, depth + 1});
+            }
+            
+        }
+        
+        return max1;
 
     }
 };
