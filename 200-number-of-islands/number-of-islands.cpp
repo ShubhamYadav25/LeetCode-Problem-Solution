@@ -1,60 +1,31 @@
 class Solution {
 private:
-    void dfs(int node, unordered_map<int, vector<int>>& adjList, unordered_set<int>& visited) {
-        stack<int> stk;
-        stk.push(node);
+    void dfs(vector<vector<char>>& grid, int r, int c, int rows, int cols) {
+        if (r < 0 || c < 0 || r >= rows || c >= cols || grid[r][c] != '1') return;
 
-        while (!stk.empty()) {
-            int current = stk.top(); stk.pop();
-            if (visited.count(current)) continue;
-            visited.insert(current);
+        grid[r][c] = '0'; // mark as visited
 
-            for (int neighbor : adjList[current]) {
-                if (!visited.count(neighbor)) {
-                    stk.push(neighbor);
-                }
-            }
-        }
+        dfs(grid, r - 1, c, rows, cols); 
+        dfs(grid, r + 1, c, rows, cols); 
+        dfs(grid, r, c - 1, rows, cols); 
+        dfs(grid, r, c + 1, rows, cols); 
     }
 
 public:
     int numIslands(vector<vector<char>>& grid) {
-         int rows = grid.size();
-        if (rows == 0) return 0;
+        int rows = grid.size();
         int cols = grid[0].size();
+        int count = 0;
 
-        unordered_map<int, vector<int>> adjList;
-
-        // adjacency list
         for (int r = 0; r < rows; ++r) {
             for (int c = 0; c < cols; ++c) {
                 if (grid[r][c] == '1') {
-                    int node = r * cols + c;
-                    // Include the node even if it has no neighbors
-                    adjList[node] = {};
-                    vector<pair<int, int>> directions = {{-1,0},{1,0},{0,-1},{0,1}};
-                    for (auto [dr, dc] : directions) {
-                        int nr = r + dr, nc = c + dc;
-                        if (nr >= 0 && nr < rows && nc >= 0 && nc < cols && grid[nr][nc] == '1') {
-                            int neighbor = nr * cols + nc;
-                            adjList[node].push_back(neighbor);
-                        }
-                    }
+                    dfs(grid, r, c, rows, cols);
+                    ++count;
                 }
             }
         }
 
-        // DFS
-        unordered_set<int> visited;
-        int islandCount = 0;
-
-        for (const auto& [node, neighbors] : adjList) {
-            if (visited.count(node) == 0) {
-                dfs(node, adjList, visited);
-                ++islandCount;
-            }
-        }
-
-        return islandCount;
+        return count;
     }
 };
