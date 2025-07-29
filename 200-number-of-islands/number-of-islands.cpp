@@ -1,31 +1,37 @@
 class Solution {
-private:
-    void dfs(vector<vector<char>>& grid, int r, int c, int rows, int cols) {
-        if (r < 0 || c < 0 || r >= rows || c >= cols || grid[r][c] != '1') return;
-
-        grid[r][c] = '0'; // mark as visited
-
-        dfs(grid, r - 1, c, rows, cols); 
-        dfs(grid, r + 1, c, rows, cols); 
-        dfs(grid, r, c - 1, rows, cols); 
-        dfs(grid, r, c + 1, rows, cols); 
-    }
-
 public:
     int numIslands(vector<vector<char>>& grid) {
         int rows = grid.size();
+        if (rows == 0) return 0;
         int cols = grid[0].size();
-        int count = 0;
+        int islands = 0;
+
+        vector<pair<int, int>> directions = {{0,1}, {1,0}, {0,-1}, {-1,0}};
 
         for (int r = 0; r < rows; ++r) {
             for (int c = 0; c < cols; ++c) {
                 if (grid[r][c] == '1') {
-                    dfs(grid, r, c, rows, cols);
-                    ++count;
+                    islands++;
+                    grid[r][c] = '0';  // mark as visited
+                    queue<pair<int, int>> q;
+                    q.push({r, c});
+
+                    while (!q.empty()) {
+                        auto [x, y] = q.front();
+                        q.pop();
+                        for (auto [dx, dy] : directions) {
+                            int nx = x + dx;
+                            int ny = y + dy;
+                            if (nx >= 0 && nx < rows && ny >= 0 && ny < cols && grid[nx][ny] == '1') {
+                                grid[nx][ny] = '0';
+                                q.push({nx, ny});
+                            }
+                        }
+                    }
                 }
             }
         }
 
-        return count;
+        return islands;
     }
 };
