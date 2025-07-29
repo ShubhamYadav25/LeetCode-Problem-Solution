@@ -1,89 +1,60 @@
-class DSU {
-    vector<int> parent;
-    vector<int> rank;
-    int count;
-
-public:
-    DSU(int size) : parent(size), rank(size, 0), count(0) {
-        iota(parent.begin(), parent.end(), 0);
-    }
-
-    void setCount(int c) {
-        count = c;
-    }
-
-    int getCount() const {
-        return count;
-    }
-
-    int Find(int x) {
-        if (parent[x] != x)
-            parent[x] = Find(parent[x]);
-        return parent[x];
-    }
-
-    void Union(int x, int y) {
-        int rootX = Find(x);
-        int rootY = Find(y);
-        if (rootX == rootY) return;
-
-        if (rank[rootX] < rank[rootY]) {
-            parent[rootX] = rootY;
-        } else if (rank[rootX] > rank[rootY]) {
-            parent[rootY] = rootX;
-        } else {
-            parent[rootY] = rootX;
-            rank[rootX]++;
-        }
-
-        count--;  // Only decrement for a successful union
-    }
-};
-
 class Solution {
-public:
-    int numIslands(vector<vector<char>>& grid) {
-        if (grid.empty()) return 0;
+private:
+    void dfs(int node, unordered_map<int, vector<int>>& adjList, unordered_set<int>& visited) {
+        stack<int> stk;
+        stk.push(node);
 
-        int rows = grid.size();
-        int cols = grid[0].size();
-        DSU dsu(rows * cols);
+        while (!stk.empty()) {
+            int current = stk.top(); stk.pop();
+            if (visited.count(current)) continue;
+            visited.insert(current);
 
-        auto getId = [&](int i, int j) {
-            return i * cols + j;
-        };
-
-        int landCount = 0;
-
-        for (int i = 0; i < rows; ++i) {
-            for (int j = 0; j < cols; ++j) {
-                if (grid[i][j] == '1') {
-                    landCount++;
+            for (int neighbor : adjList[current]) {
+                if (!visited.count(neighbor)) {
+                    stk.push(neighbor);
                 }
             }
         }
+    }
 
-        dsu.setCount(landCount); 
+public:
+    int numIslands(vector<vector<char>>& grid) {
+         int rows = grid.size();
+        if (rows == 0) return 0;
+        int cols = grid[0].size();
 
-        // Only right and down to avoid duplicates
-        vector<pair<int, int>> directions = {{0,1}, {1,0}};  
+        unordered_map<int, vector<int>> adjList;
 
-        for (int i = 0; i < rows; ++i) {
-            for (int j = 0; j < cols; ++j) {
-                if (grid[i][j] == '1') {
-                    int currId = getId(i, j);
-                    for (auto& dir : directions) {
-                        int ni = i + dir.first;
-                        int nj = j + dir.second;
-                        if (ni >= 0 && ni < rows && nj >= 0 && nj < cols && grid[ni][nj] == '1') {
-                            int neighborId = getId(ni, nj);
-                            dsu.Union(currId, neighborId);
+        // adjacency list
+        for (int r = 0; r < rows; ++r) {
+            for (int c = 0; c < cols; ++c) {
+                if (grid[r][c] == '1') {
+                    int node = r * cols + c;
+                    // Include the node even if it has no neighbors
+                    adjList[node] = {};
+                    vector<pair<int, int>> directions = {{-1,0},{1,0},{0,-1},{0,1}};
+                    for (auto [dr, dc] : directions) {
+                        int nr = r + dr, nc = c + dc;
+                        if (nr >= 0 && nr < rows && nc >= 0 && nc < cols && grid[nr][nc] == '1') {
+                            int neighbor = nr * cols + nc;
+                            adjList[node].push_back(neighbor);
                         }
                     }
                 }
             }
         }
 
-        return dsu.getCount();
+        // DFS
+        unordered_set<int> visited;
+        int islandCount = 0;
+
+        for (const auto& [node, neighbors] : adjList) {
+            if (visited.count(node) == 0) {
+                dfs(node, adjList, visited);
+                ++islandCount;
+            }
+        }
+
+        return islandCount;
     }
 };
