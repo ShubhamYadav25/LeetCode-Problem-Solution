@@ -1,48 +1,26 @@
 class Solution {
 public:
     vector<int> findAnagrams(string s, string p) {
-       unordered_map<char, int> table;
-        vector<int> ans;
-        
-        for(char c : p){
-            table[c]++;
-        }
-        
-        if(s.length() < p.length() || s.length() == 0) return ans;
-        
-        int begin = 0, end = 0, word_size = p.length();
-        int counter = table.size();
-        
-        while(end  < s.length()){
-            char endchar = s[end];
-            
-            if(table.count(endchar) == 1){
-                                    // cout<<begin<< " "<<s[begin]<<" "<<end<<"\n";
+        vector<int> v1(26, 0);
+        vector<int> v;
 
-                table[endchar]--;
-                if(table[endchar] == 0) counter--;
-            }
-            
-            end++;
-            cout<<counter<<"\n";
-            
-            while(counter == 0){
-                if(end - begin == word_size) {
-                    ans.push_back(begin);
-                }
-                
-                char beginchar = s[begin];
-                
-                if(table.count(beginchar) == 1){
-                    table[beginchar]++;
-                    if(table[beginchar] > 0) counter++;
-                }
-                
-                begin++;
-            }
+        for(auto i: p){
+            v1[i - 'a']++;
         }
-        
-        return ans;
-        
+        // maintaining a array
+        vector<int> v2(26,0);
+
+        int i = 0, j=0, n = s.length();
+        while( j < n ){
+            v2[s[j]- 'a']++;
+            if(j - i + 1 == p.length()){
+                if(v1 == v2) v.push_back(i);
+                v2[s[i] -'a']--;
+                i++;
+            }
+            j++;
+        }
+
+        return v;
     }
 };
