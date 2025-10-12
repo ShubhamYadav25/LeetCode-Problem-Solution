@@ -1,13 +1,17 @@
 class Solution {
 public:
     bool isSubsequence(string s, string t) {
-         int sCount = 0; 
-    for (int i = 0; i < t.length() && sCount < s.length(); i++)
-        if (s[sCount] == t[i])
-            sCount++;
- 
-    // if count == s length => all character covered
-    return (sCount == s.length());
+        int i=0, j=0;
+
+        while(j < t.length() && i < s.length()){
+            
+            if(s[i] == t[j]){
+                cout<< i << " "<<j<<"\n";
+                i++;
+            }
+
+            j++;
+        }
+        return i == s.length();
     }
-    
 };
