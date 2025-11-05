@@ -1,30 +1,19 @@
 class Solution {
 public:
     int minDeletions(string s) {
+        vector<int> freq(26, 0);
+        for (char c : s) freq[c - 'a']++;
 
-        unordered_map<char, int> m;
+        unordered_set<int> used;
+        int deletions = 0;
 
-        for (auto i : s) {
-            m[i]++;
-        }
-
-        int x = 0;
-
-        // using a set so that we not need to go over map to check duplicate
-        // freq
-        unordered_set<int> usedFreq;
-        int deletetion = 0;
-
-        for (auto& p : m) {
-            int freq = p.second;
-            while (freq > 0 && usedFreq.count(freq)) {
-                freq--;
-                deletetion++;
+        for (int f : freq) {
+            while (f > 0 && used.find(f) != used.end()) {
+                f--;
+                deletions++;
             }
-            if (freq > 0)
-                usedFreq.insert(freq);
+            if (f > 0) used.insert(f);
         }
-
-        return deletetion;
+        return deletions;
     }
 };
