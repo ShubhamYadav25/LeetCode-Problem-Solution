@@ -1,32 +1,18 @@
 class Solution {
 public:
     string reverseVowels(string s) {
-        unordered_map<int, int> m;
-        m['a'] = 1;
-        m['e'] = 1;
-        m['i'] = 1;
-        m['o'] = 1;
-        m['u'] = 1;
-        m['A'] = 1;
-        m['E'] = 1;
-        m['I'] = 1;
-        m['O'] = 1;
-        m['U'] = 1;
+        auto isVowel = [](char c) {
+            static const string vowels = "aeiouAEIOU";
+            return vowels.find(c) != string::npos;
+        };
 
-        int i =0, j = s.length() - 1;
-
-        while(i <= j){
-            if(m[s[i]] && m[s[j]]){
-                swap(s[i], s[j]);
+        int i = 0, j = s.size() - 1;
+        while (i < j) {
+            while (i < j && !isVowel(s[i]))
                 i++;
+            while (i < j && !isVowel(s[j]))
                 j--;
-            }
-            else if(m[s[i]]){
-                j--;
-            }
-            else {
-                i++;
-            };
+            swap(s[i++], s[j--]);
         }
         return s;
     }
