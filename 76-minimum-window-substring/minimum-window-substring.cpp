@@ -1,32 +1,40 @@
 class Solution {
+    #define SIZE 256+2
+    bool equalFreq(vector<int>& curr,vector<int>& freq){//Check frequency of current window with freq(t)
+        for(int i=0;i<SIZE;++i)
+            if(freq[i]>0 and curr[i]<freq[i])
+                return false;
+        return true;
+    }
 public:
     string minWindow(string s, string t) {
+        int n=s.size();
+        if(n<t.size())
+            return "";
+
+        vector<int> freq(SIZE,0);
+        for(char &c: t)//Find freq(t)
+            freq[c]++;
+
+        int l=0,r=0;//left and right pointers of sliding window
+        int minWin = INT_MAX;
+        string ans="";
+        vector<int> curr(SIZE,0);
         
-        // frequency table 
-        vector<int> map(128,0);
-        
-        // add count in freq
-        for(auto c: t) map[c]++;
-        
-        int counter=t.size(), begin=0, end=0, d=INT_MAX, head=0;
-        
-        while(end<s.size()){
-            
-            // if element in map reduce counter 
-            // if counter 0 it is valid substrng 
-            if(map[s[end++]]-->0) counter--; 
-            
-            // Now make it invalid from start 
-            while(counter==0){ 
-                
-                // stay with head it will help to find string
-                if(end-begin<d)  d=end-(head=begin);
-                
-                if(map[s[begin++]]++==0) counter++;  //make it invalid
-            }  
+        while(r<n){ //run till end of string
+            curr[s[r]]++;
+            if(equalFreq(curr,freq)){//If we have all chars of t in our curr window
+                do {    //move left ptr to as right as possible to minimize window size
+                    curr[s[l]]--;
+                    l++;
+                }while(equalFreq(curr,freq));//Run until curr no more matches t
+                if(minWin > r-l+2){//If curr window size is less than already know minWin size
+                    minWin = r-l+2;
+                    ans = s.substr(l-1,minWin);
+                }
+            }
+            r++;
         }
-        
-        
-        return d==INT_MAX? "":s.substr(head, d);
+        return ans;
     }
 };
