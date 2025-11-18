@@ -12,12 +12,28 @@
 class Solution {
 public:
     int countNodes(TreeNode* root) {
-        if(!root){
-            return 0;
-        }
-        int l = (countNodes(root->left));
-        int r = (countNodes(root->right));
-        return 1 + l + r;  
+        if (!root) return 0;
 
+        int lh = getLeftHeight(root);
+        int rh = getRightHeight(root);
+
+        if (lh == rh) {
+            return (1 << lh) - 1; // perfect tree
+        }
+
+        return 1 + countNodes(root->left) + countNodes(root->right);
+    }
+
+private:
+    int getLeftHeight(TreeNode* node) {
+        int h = 0;
+        while (node) node = node->left, h++;
+        return h;
+    }
+
+    int getRightHeight(TreeNode* node) {
+        int h = 0;
+        while (node) node = node->right, h++;
+        return h;
     }
 };
