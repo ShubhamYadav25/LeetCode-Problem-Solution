@@ -1,27 +1,42 @@
 class Solution {
 public:
-set<vector<int>> visited;
-vector<vector<int>> result;
-
-    void generatePermutations(vector<int>& nums, int index) {
-        if (index == (int)nums.size()) {
-            if (visited.find(nums) == visited.end()) {
-                visited.insert(nums);
-                result.push_back(nums);
-            }
+    vector<vector<int>> ans;
+    vector<int> path;      // rooms (arrangement), basically if size =0 then room A selected, size = 1 room b selected
+    vector<bool> used;     // available items
+    void permutation(vector<int>& nums){
+        
+        // if path size = 0, basically it mean it is Room A is processing
+        // can say if path size == nums.size() => all rooms filled
+        if(path.size() == nums.size()){
+            ans.push_back(path);
             return;
         }
 
-        for (int i = index; i < (int)nums.size(); ++i) {
-            swap(nums[index], nums[i]);
-            generatePermutations(nums, index + 1);
-            swap(nums[index], nums[i]); 
+        // now task is too, try placing all the items in selected ROOM for now say ROOM A
+        // can say try placing all items in the current room
+        for(int i =0; i < nums.size(); i++){
+            
+            // what is it saying, it mean if item already used in some previous room, skip
+            if(used[i]) continue;
+
+            // if not used, place in current room
+            used[i] = true;
+
+            path.push_back((nums[i]));
+
+            // now size of path is 1 so second room B selected and process this same process for B
+            permutation(nums);
+
+            // undo before trying next item in this room
+            path.pop_back();
+            used[i] = false;
         }
+
     }
+
     vector<vector<int>> permute(vector<int>& nums) {
-         visited.clear();
-        result.clear();
-        generatePermutations(nums, 0);
-        return result;
+        used.assign(nums.size(), false);
+        permutation(nums);
+        return ans;
     }
 };
