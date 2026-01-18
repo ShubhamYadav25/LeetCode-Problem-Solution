@@ -1,0 +1,37 @@
+class Solution {
+public:
+    /**
+For maxFreq = 3 and n = 2:
+[A _ _] [A _ _] [A]
+Number of full gaps = maxFreq - 1
+Each gap needs size n
+So base length = (maxFreq - 1) * (n + 1)  ( n+1 : task + n slot)
+ans = max(
+    totalTasks,
+    (maxFreq - 1) * (n + 1) + countMax
+)
+- If enough tasks exist → no idle needed
+- Else → idle slots are forced
+
+    */
+    int leastInterval(vector<char>& tasks, int n) {
+        vector<int> freq(26, 0);
+        for (char t : tasks)
+            freq[t - 'A']++;
+
+        int maxFreq = 0;
+        for (int f : freq)
+            maxFreq = max(maxFreq, f);
+
+        int countMax = 0;
+        for (int f : freq)
+            if (f == maxFreq)
+                countMax++;
+
+        int partCount = maxFreq - 1;
+        int partLength = n + 1;
+        int emptySlots = partCount * partLength + countMax;
+
+        return max((int)tasks.size(), emptySlots);
+    }
+};
