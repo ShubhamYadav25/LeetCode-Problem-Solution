@@ -1,8 +1,20 @@
 class Solution {
 public:
-    bool isAnagram(string s1, string s2) {
-        sort(s1.begin(), s1.end());
-        sort(s2.begin(), s2.end());
-        return  s1 == s2 ;
+    bool isAnagram(string s, string t) {
+        if (s.size() != t.size())
+            return false;
+
+        int cnt[26] = {0};
+
+        for (int i = 0; i < s.size(); i++) {
+            cnt[s[i] - 'a']++;
+            cnt[t[i] - 'a']--;
+        }
+
+        for (int i = 0; i < 26; i++) {
+            if (cnt[i] != 0)
+                return false;
+        }
+        return true;
     }
 };
