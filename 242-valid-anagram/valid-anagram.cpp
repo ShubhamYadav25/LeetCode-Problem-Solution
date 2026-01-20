@@ -1,14 +1,8 @@
 class Solution {
 public:
     bool isAnagram(string s1, string s2) {
-         if (s1.length() != s2.length()) return false;
-        unordered_map<char, int> freq;
-
-        for (char c : s1) freq[c]++;
-        for (char c : s2) {
-            if (--freq[c] < 0) return false;
-        }
-
-        return true;
+        sort(s1.begin(), s1.end());
+        sort(s2.begin(), s2.end());
+        return  s1 == s2 ;
     }
 };
