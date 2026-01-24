@@ -1,48 +1,34 @@
 class Solution {
 public:
+    int binarySearch(vector<int>& nums, int target, bool findFirst) {
+        int i = 0, j = nums.size() - 1;
+        int ans = -1;
 
-    vector<int> v = {-1, -1};
+        while (i <= j) {
+            int mid = i + (j - i) / 2;
 
-    void BSL(vector<int>& nums, int target){
-        int i=0,  j = nums.size()-1;
-
-        while(i <= j){
-            int mid = i + (j -i) /2 ;
-
-            if(nums[mid] == target){
-                j = mid-1;
-                v[0] = mid;
-            }else if(nums[mid] < target){
-                i = mid+1;
-            }else {
-                j = mid-1;
+            if (nums[mid] == target) {
+                ans = mid;
+                if (findFirst)
+                    j = mid - 1; // move left
+                else
+                    i = mid + 1; // move right
+            } else if (nums[mid] < target) {
+                i = mid + 1;
+            } else {
+                j = mid - 1;
             }
         }
-
+        return ans;
     }
-
-    void BSR(vector<int>& nums, int target){
-        int i=0,  j = nums.size()-1;
-
-        while(i <= j){
-            int mid = i + (j -i) /2 ;
-
-            if(nums[mid] == target){
-                v[1] = mid;
-                i = mid+1;
-            }else if(nums[mid] < target){
-                i = mid+1;
-            }else {
-                j = mid-1;
-            }
-        }
-
-    }
-
 
     vector<int> searchRange(vector<int>& nums, int target) {
-        BSL(nums, target);
-        BSR(nums, target);
-        return v;
+        if (nums.empty())
+            return {-1, -1};
+
+        int first = binarySearch(nums, target, true);
+        int last = binarySearch(nums, target, false);
+
+        return {first, last};
     }
 };
