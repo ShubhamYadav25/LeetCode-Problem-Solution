@@ -1,40 +1,46 @@
 class Solution {
 public:
-    string getPermutation(int n, int k) {
-        vector<int> numbers;
-        int factorial = 1;
+    string result;
+    int count = 0;
 
-        // Compute (n-1)! => block size 1-6, 7-12 ....
-        for (int i = 1; i < n; i++)
-            factorial *= i;
+    void backtrack(vector<int>& nums, vector<bool>& used, string& current,
+                   int n, int k) {
 
-        // Store numbers 1 to n
-        for (int i = 1; i <= n; i++)
-            numbers.push_back(i);
-
-        k--; // convert to 0-based indexing
-
-        string result = "";
-
-        while (n > 0) {
-            // to check pos as index where k lies in which blocks 1-6 or 7-12 or ...  
-            // 1–6 → start with 1
-            // 7–12 → start with 2
-            // 13–18 → start with 3
-            // 19–24 → start with 4
-            int index = k / factorial;
-            result += to_string(numbers[index]);
-
-            // now remove that num and check for other like  2 [1 3 4]
-            numbers.erase(numbers.begin() + index);
-            
-            // instead of substrac 9 - 6 = 3 we can do below
-            k = k % factorial;
-            n--;
-
-            if (n > 0)
-                factorial /= n;
+        if (current.size() == n) {
+            count++;
+            if (count == k) {
+                result = current;
+            }
+            return;
         }
+
+        for (int i = 0; i < n; i++) {
+            if (used[i])
+                continue;
+
+            used[i] = true;
+            current += to_string(nums[i]);
+
+            backtrack(nums, used, current, n, k);
+
+            // Stop early if found
+            if (!result.empty())
+                return;
+
+            current.pop_back();
+            used[i] = false;
+        }
+    }
+
+    string getPermutation(int n, int k) {
+        vector<int> nums;
+        for (int i = 1; i <= n; i++)
+            nums.push_back(i);
+
+        vector<bool> used(n, false);
+        string current = "";
+
+        backtrack(nums, used, current, n, k);
 
         return result;
     }
