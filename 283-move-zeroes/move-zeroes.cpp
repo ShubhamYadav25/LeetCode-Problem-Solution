@@ -1,13 +1,21 @@
 class Solution {
 public:
     void moveZeroes(vector<int>& nums) {
-        int i = 0; // position to place non-zero
+        vector<int> temp;
 
-        for (int j = 0; j < nums.size(); j++) {
-            if (nums[j] != 0) {
-                swap(nums[i], nums[j]);
-                i++;
-            }
+        // push non-zero
+        for (int x : nums) {
+            if (x != 0)
+                temp.push_back(x);
         }
+
+        // count zeros
+        int zeros = nums.size() - temp.size();
+
+        // add zeros
+        while (zeros--)
+            temp.push_back(0);
+
+        nums = temp;
     }
 };
