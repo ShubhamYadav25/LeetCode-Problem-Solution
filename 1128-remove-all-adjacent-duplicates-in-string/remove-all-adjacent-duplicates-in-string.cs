@@ -1,20 +1,16 @@
 public class Solution {
     public string RemoveDuplicates(string s) {
-        
-        Stack<char> st = new();
+            char[] result = new char[s.Length];
+            int top = -1;
 
-        foreach(var i in s){
-
-             // TryPeek returns false if empty, or checks the value if elements exist
-           if(st.TryPeek(out var top) && top == i){
-                st.Pop();
+            foreach (char c in s)
+            {
+                if (top >= 0 && result[top] == c)
+                    top--;
+                else
+                    result[++top] = c;
             }
-            else{
-                st.Push(i);
-            }
-        }
 
-        return string.Join("", st.Reverse());
-
+            return new string(result, 0, top + 1);
     }
 }
